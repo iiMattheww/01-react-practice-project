@@ -1,2 +1,2 @@
 # 01-starting-project
-a project for practice
+a project for practice react
