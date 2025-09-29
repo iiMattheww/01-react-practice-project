@@ -1,29 +1,78 @@
-const reactDescriptions = ["Fundamental", "Crucial", "Core"];
-
-function genRandomInt(max) {
-    return Math.floor(Math.random() * (max + 1));
-}
-
-function Header() {
-  const descreption = reactDescriptions[genRandomInt(2)];
-    return (
-        <header>
-            <img src="src/assets/react-core-concepts.png" alt="Stylized atom" />
-            <h1>React Essentials</h1>
-            <p>
-                {descreption} React concepts you will need for almost any app you
-                are going to build!
-            </p>
-        </header>
-    );
-}
+import { use, useState } from "react";
+import { CORE_CONCEPTS } from "./data.js";
+import Header from "./components/Header/Header.jsx";
+import CoreConcepts from "./components/CoreConcept.jsx";
+import TabButton from "./components/Tabbutton.jsx";
+import { EXAMPLES } from "./data.js";
 
 function App() {
+    const [selectedTopic, setSelectedTopic] = useState("");
+
+    function handleSelect(selectedButton) {
+        // selectedButton => 'components', 'JSX', 'Props', 'State'
+        setSelectedTopic(selectedButton);
+        console.log({ selectedTopic });
+    }
+
+    let tabContent = <p>Please select a topic</p>;
+    if (selectedTopic) {
+        tabContent = (
+            <div id="tab-content">
+                <h3>{EXAMPLES[selectedTopic].title}</h3>
+                <p>{EXAMPLES[selectedTopic].descreption}</p>
+                <pre>
+                    <code>{EXAMPLES[selectedTopic].code}</code>
+                </pre>
+            </div>
+        );
+    }
+
     return (
         <div>
             <Header />
             <main>
-                <h2>Time to get started!</h2>
+                <section id="core-concepts">
+                    <h2>Core Concepts</h2>
+                    <ul>
+                        {CORE_CONCEPTS.map((conceptItem) => (
+                            // output list data dynamically
+                            <CoreConcepts
+                                key={conceptItem.title}
+                                {...conceptItem}
+                            />
+                        ))}
+                    </ul>
+                </section>
+                <section id="examples">
+                    <h2>Examples</h2>
+                    <menu>
+                        <TabButton
+                            isSelected={selectedTopic === "components"}
+                            onSelect={() => handleSelect("components")}
+                        >
+                            Components
+                        </TabButton>
+                        <TabButton
+                            isSelected={selectedTopic === "jsx"}
+                            onSelect={() => handleSelect("jsx")}
+                        >
+                            JSX
+                        </TabButton>
+                        <TabButton
+                            isSelected={selectedTopic === "props"}
+                            onSelect={() => handleSelect("props")}
+                        >
+                            Props
+                        </TabButton>
+                        <TabButton
+                            isSelected={selectedTopic === "state"}
+                            onSelect={() => handleSelect("state")}
+                        >
+                            State
+                        </TabButton>
+                    </menu>
+                    {tabContent}
+                </section>
             </main>
         </div>
     );
